@@ -1,0 +1,9 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.exclude": {},
+  "[javascript]": {
+    "editor.formatOnSave": false,
+    "editor.insertSpaces": false,
+    "files.trimTrailingWhitespace": false
+  }
+}
