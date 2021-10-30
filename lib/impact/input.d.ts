@@ -1,10 +1,18 @@
 export declare module './impact' {
-  type ImpactInput = {}
+  class ImpactInput {
+    bind(key: number, action: string): void
+    unbind(key: number)
+    state(action: string): boolean
+  }
 
   interface Impact {
-    KEY: any
-    Input: ImpactClass<ImpactInput>
+    Input: typeof ImpactInput
     input: ImpactInput
+
+    KEY: {
+      LEFT_ARROW: number
+      RIGHT_ARROW: number
+    }
   }
 }
 

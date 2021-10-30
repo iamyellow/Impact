@@ -1,12 +1,17 @@
 export declare module './impact' {
-  type ImpactSound = {}
-  type ImpactMusic = {}
-  type ImpactSoundManager = {}
+  class ImpactSound {
+    path: string
+    load: (callback: (path: string, success: true) => void) => void
+  }
+
+  class ImpactMusic {}
+
+  class ImpactSoundManager {}
 
   interface Impact {
-    Sound: ImpactClass<ImpactSound>
-    Music: ImpactClass<ImpactMusic>
-    SoundManager: ImpactClass<ImpactSoundManager>
+    Sound: typeof ImpactSound
+    Music: typeof ImpactMusic
+    SoundManager: typeof ImpactSoundManager
 
     soundManager: ImpactSoundManager
     music: ImpactMusic

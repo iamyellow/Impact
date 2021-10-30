@@ -1,23 +1,20 @@
 export declare module './impact' {
-  type ImpactSystem = {
+  class ImpactSystem {
+    constructor(
+      canvas: HTMLCanvasElement,
+      fps: number,
+      width: number,
+      height: number,
+      scale?: number
+    )
+
     width: number
     height: number
     context: CanvasRenderingContext2D
   }
 
   interface Impact {
-    System: ImpactClass<
-      ImpactSystem,
-      {
-        new (
-          canvasId: any, // TODO
-          fps: number,
-          width: number,
-          height: number,
-          scale?: number
-        ): ImpactSystem
-      }
-    >
+    System: typeof ImpactSystem
     system: ImpactSystem
   }
 }

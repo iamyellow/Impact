@@ -1,12 +1,14 @@
 import React from 'react'
-import { Game } from '../lib/react/Game'
+import { Weltmeister } from '../lib/react/Weltmeister'
+//import { Game } from '../lib/react/Game'
+//import { LevelOne } from './level/LevelOne'
 
 export const ExampleGame = () => {
-  return (
-    <Game>
-      <div />
-    </Game>
-  )
+  return <Weltmeister />
 }
 
-//       <Game.Levels name="a"></Game.Levels>
+/*
+Game scale={1} style={{ background: 'yellow', width: 612, height: 612 }}>
+      <LevelOne />
+    </Game>
+  )*/

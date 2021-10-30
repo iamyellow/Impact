@@ -1,21 +1,19 @@
-import makeInstance from './impact'
-import addClass from './class'
 import addAnimation from './animation'
-import addMap from './map'
 import addBackgroundMap from './background-map'
+import addClass from './class'
 import addCollisionMap from './collision-map'
-import addSystem from './system'
-import addInput from './input'
-import addSound from './sound'
-import addEntityPool from './entity-pool'
-import addGame from './game'
 import addEntity from './entity'
-import addImage from './image'
+import addEntityPool from './entity-pool'
 import addFont from './font'
+import addGame from './game'
+import addImage from './image'
+import makeInstance from './impact'
+import addInput from './input'
 import addLoader from './loader'
+import addMap from './map'
+import addSound from './sound'
+import addSystem from './system'
 import addTimer from './timer'
-
-export interface Impact {}
 
 export const makeImpactInstance = () => {
   const ig = makeInstance()
@@ -34,21 +32,5 @@ export const makeImpactInstance = () => {
   addFont(ig)
   addLoader(ig)
   addTimer(ig)
-
-  const canvasId = null
-  const fps = 60
-  const width = 0
-  const height = 0
-  const scale = 1
-
-  ig.system = new ig.System(canvasId, fps, width, height, scale)
-  ig.input = new ig.Input()
-  ig.soundManager = new ig.SoundManager()
-  ig.music = new ig.Music()
-  ig.ready = true
-
-  //var loader = new ig.Loader(gameClass, ig.resources)
-  //loader.load()
-
   return ig
 }

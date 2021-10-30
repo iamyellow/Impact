@@ -19,15 +19,19 @@ export declare global {
 export declare module './impact' {
   export interface Impact {
     version: string
+    ready: boolean
 
     setAnimation: (callback: () => void) => void
     clearAnimation: () => void
 
-    ready: boolean
+    global: { [key: string]: object }
+
+    resources: Array<ImpactImage | ImpactSound>
+
+    _wm?: boolean
 
     // TODO:
     ua: any
-    resources: Array<any>
   }
 
   export default function (): Impact

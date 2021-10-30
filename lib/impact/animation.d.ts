@@ -1,7 +1,12 @@
 export declare module './impact' {
+  class ImpactAnimationSheet {
+    constructor(image: string | number, width: number, height: number)
+  }
+  class ImpactAnimation {}
+
   interface Impact {
-    AnimationSheet: object
-    Animation: object
+    AnimationSheet: typeof ImpactAnimationSheet
+    Animation: typeof ImpactAnimation
   }
 }
 

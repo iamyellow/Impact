@@ -2,12 +2,7 @@ export declare module './impact' {
   class ImpactFontClass extends ImpactImageClass {}
 
   interface Impact {
-    Font: ImpactClass<ImpactFontClass> &
-      ImpactImageClassConstructor & {
-        ALIGN: {
-          CENTER: number
-        }
-      }
+    Font: typeof ImpactFontClass
   }
 }
 

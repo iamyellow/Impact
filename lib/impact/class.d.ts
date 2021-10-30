@@ -1,9 +1,8 @@
 export declare module './impact' {
-  type ImpactClass<T extends typeof class, ctor = null> = {
-    new (): T
+  type ImpactClass<T> = T & {
     extend<E>(extension: E & Partial<T>): ImpactClass<T & E>
     inject<I extends Partial<T>>(inject: I): void
-  } & (ctor extends null ? { new (): T } : ctor)
+  }
 
   interface Impact {
     Class: ImpactClass

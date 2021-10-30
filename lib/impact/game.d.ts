@@ -5,10 +5,12 @@ export declare module './impact' {
     init(): void
     draw(): void
     update(): void
+    startRunLoop(): void
+    stopRunLoop(): void
   }
 
   interface Impact {
-    Game: ImpactClass<ImpactGame>
+    Game: typeof ImpactGame
     game: ImpactGame
   }
 }

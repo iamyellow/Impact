@@ -1,12 +1,13 @@
 export declare module './impact' {
-  class ImpactImage {}
+  class ImpactImage {
+    constructor(path: string)
 
-  type ImpactImageConstructors = {
-    new (path: string): ImpactImage
+    path: string
+    load: (callback: (path: string, success: true) => void) => void
   }
 
   interface Impact {
-    Image: ImpactClass<ImpactImage> & ImpactImageConstructors
+    Image: typeof ImpactImage
   }
 }
 

@@ -1,6 +1,11 @@
 export declare module './impact' {
+  class ImpactEntity {
+    size: { x: number; y: number }
+    animSheet: ImpactAnimationSheet
+  }
+
   interface Impact {
-    Entity: object
+    Entity: typeof ImpactEntity
   }
 }
 

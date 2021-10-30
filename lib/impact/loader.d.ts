@@ -1,10 +1,10 @@
 export declare module './impact' {
-  type ImpactLoader = {
+  class ImpactLoader {
     load(): void
   }
 
   interface Impact {
-    Loader: ImpactClass<ImpactLoader>
+    Loader: typeof ImpactLoader
   }
 }
 
