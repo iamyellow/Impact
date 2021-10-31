@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { Animation, AnimationSheet } from '../../lib/react/AnimationSheet'
-import { useImpact } from '../../lib/react/context'
+import { useImpact } from '../../lib/react/types'
 import { Entity } from '../../lib/react/Entity'
 import { KeyInput } from '../../lib/react/Input'
 import playerpng from './player.png'
@@ -29,7 +29,7 @@ export const EntityPlayer = () => {
 
   return (
     <Entity name="Player" size={{ x: 16, y: 16 }}>
-      <AnimationSheet image={playerpng} width={8} height={8}>
+      <AnimationSheet image={playerpng} width={16} height={24}>
         <Animation name={PlayerAnimation.IDLE} duration={1} frames={[0]} />
         <Animation
           name={PlayerAnimation.JUMP}

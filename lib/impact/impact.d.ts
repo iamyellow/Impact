@@ -28,8 +28,6 @@ export declare module './impact' {
 
     resources: Array<ImpactImage | ImpactSound>
 
-    _wm?: boolean
-
     // TODO:
     ua: any
   }

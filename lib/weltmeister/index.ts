@@ -1,10 +1,21 @@
-export const wmConfig = {
+import { Impact } from '../impact/impact'
+import addEditEntities from './edit-entities'
+import addEditMap from './edit-map'
+import addEventedInput from './evented-input'
+import addModalDialogs from './modal-dialogs'
+import addSelectFileDropdown from './select-file-dropdown'
+import addTileSelect from './tile-select'
+import addUndo from './undo'
+import makeInstance from './weltmeister'
+
+const config = {
   project: {
     // The prefix path of your game's source code. You only have to change
     // this if you use the 'ImpactPrefix' in your dev environment.
     modulePath: 'lib/',
 
     // The default path for the level file selection box
+    // TODO: remove this
     levelPath: 'lib/game/levels/',
 
     // Whether to save levels as plain JSON or wrapped in a module. If
@@ -104,7 +115,20 @@ export const wmConfig = {
   // different backend (i.e. not the official PHP backend), you may have
   // to change these.
   api: {
-    save: 'lib/weltmeister/api/save.php',
-    browse: 'lib/weltmeister/api/browse.php'
+    save: '/api/save',
+    browse: '/api/browse'
   }
+}
+
+export const makeWeltmeisterInstance = (ig: Impact) => {
+  const wm = makeInstance(ig, config)
+  addEditEntities(ig, wm)
+  addEditMap(ig, wm)
+  addEventedInput(ig, wm)
+  addModalDialogs(ig, wm)
+  addSelectFileDropdown(ig, wm)
+  addTileSelect(ig, wm)
+  addUndo(ig, wm)
+
+  return wm
 }

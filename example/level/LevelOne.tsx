@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { Level } from '../../lib/react/Level'
 import { EntityPlayer } from '../entity/EntityPlayer'
-import data from './LevelOne.data'
+import data from './_LevelOne.data'
 
 export const LevelOne = () => {
   // TODO: ImpactGame argument
@@ -10,7 +10,7 @@ export const LevelOne = () => {
   }, [])
 
   return (
-    <Level name="One" data={data} onUpdate={onUpdate}>
+    <Level name="One" onUpdate={onUpdate}>
       <EntityPlayer />
     </Level>
   )

@@ -1,20 +1,12 @@
-import React, {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { makeImpactInstance } from '../impact'
-import { GameContext, GameContextT, GameLevel, ImpactContext } from './context'
-
-export type GameProps = {
-  className?: string
-  style?: CSSProperties
-  children?: React.ReactNode
-  scale?: number
-}
+import {
+  GameContext,
+  GameContextT,
+  GameProps,
+  ImpactContext,
+  LevelContextT
+} from './types'
 
 export const Game = (props: GameProps) => {
   const { children, className, style, ...impactDefaults } = props
@@ -23,7 +15,7 @@ export const Game = (props: GameProps) => {
 
   const [ready, setReady] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const gameLevelRef = useRef<GameLevel>()
+  const levelRef = useRef<LevelContextT>()
 
   const ig = useMemo(() => {
     return makeImpactInstance()
@@ -66,22 +58,23 @@ export const Game = (props: GameProps) => {
 
   const context = useMemo<GameContextT>(() => {
     return {
-      setLevel: (level: GameLevel) => {
-        console.log(`*** setLevel ${level.name}`)
-        if (gameLevelRef.current !== undefined) {
+      setLevel(levelContext) {
+        console.log(`*** setLevel ${levelContext.name}`)
+        if (levelRef.current !== undefined) {
           throw 'One level at a time'
         }
-        gameLevelRef.current = level
+        levelRef.current = levelContext
+
         loadResources()
       },
-      clearLevel: () => {
+      clearLevel() {
         console.log('*** clearLevel')
 
         console.log('*** stopRunLoop')
         // ig.game.stopRunLoop()
 
         ig.resources.length = 0
-        gameLevelRef.current = undefined
+        levelRef.current = undefined
       }
     }
   }, [])

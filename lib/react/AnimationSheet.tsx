@@ -5,7 +5,7 @@ import {
   ImpactValue,
   useEntityContext,
   useImpact
-} from './context'
+} from './types'
 
 export const Animation = (props: AnimationSheetAnim) => {
   const entity = useEntityContext()

@@ -11,6 +11,9 @@ export declare module './impact' {
     width: number
     height: number
     context: CanvasRenderingContext2D
+
+    // TODO
+    delegate: any
   }
 
   interface Impact {

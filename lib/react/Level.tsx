@@ -1,23 +1,25 @@
 import React, { useEffect, useMemo } from 'react'
-import { LevelContext, LevelContextT, useGameContext } from './context'
-
-export type LevelProps = {
-  children?: React.ReactNode
-  name: string
-  data: object
-  onUpdate: () => void
-}
+import {
+  LevelContext,
+  LevelContextT,
+  LevelProps,
+  useGameContext
+} from './types'
 
 export const Level = (props: LevelProps) => {
   const game = useGameContext()
 
   const context = useMemo<LevelContextT>(() => {
-    return {} as LevelContextT
+    const { name, onUpdate } = props
+    return {
+      name,
+      onUpdate,
+      entityModules: []
+    }
   }, [])
 
   useEffect(() => {
-    const { name, data, onUpdate } = props
-    game.setLevel({ name, data, onUpdate })
+    game.setLevel(context)
 
     return () => {
       game.clearLevel()

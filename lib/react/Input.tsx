@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useImpact } from './context'
+import { useImpact } from './types'
 
 export type InputProps = {
   keyCode: number
@@ -10,10 +10,7 @@ export const KeyInput = (props: InputProps) => {
   const ig = useImpact()
 
   useEffect(() => {
-    if (ig._wm === true) {
-      return
-    }
-
+    // TODO: if wm ignore
     ig.input.bind(props.keyCode, props.name)
 
     return () => {

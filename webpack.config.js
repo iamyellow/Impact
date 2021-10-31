@@ -64,7 +64,12 @@ module.exports = {
   optimization,
   devServer: {
     historyApiFallback: true,
-    proxy: {},
+		proxy: {
+      '/api': {
+        target: 'http://localhost:6120',
+        pathRewrite: { '^/api': '' },
+      },
+    },
     static: [path.resolve(__dirname, `public`)],
     port: 3000
   }
