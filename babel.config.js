@@ -13,7 +13,6 @@ module.exports = {
     ],
     '@babel/plugin-syntax-dynamic-import',
     '@babel/plugin-proposal-nullish-coalescing-operator',
-    '@babel/plugin-proposal-optional-chaining',
-		'codegen'
+    '@babel/plugin-proposal-optional-chaining'
   ]
 }

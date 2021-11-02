@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
-import { ig } from '../lib/impact'
+//import { ig } from '../lib/impact'
 import pxfont from '../media/crate.png'
 import { EntityPlayer } from './entities/player'
-import { LevelTest } from './levels/test'
 
+/*
 export const MyGame = ig.Game.extend<any>({
   font: new ig.Font(pxfont),
   clearColor: '#1b2026',
@@ -52,6 +52,7 @@ export const MyGame = ig.Game.extend<any>({
     this.font.draw('Arrow Keys, X, C', 2, 2)
   }
 })
+*/
 
 export const Game = () => {
   useEffect(() => {
@@ -182,8 +183,7 @@ export const Game = () => {
       requestAnimationFrame(loop)
     }
     img.src = pxfont*/
-
-    ig.main('#canvas', MyGame, 60, 320, 240, 2)
+    //ig.main('#canvas', MyGame, 60, 320, 240, 2)
   }, [])
 
   return <canvas id="canvas"></canvas>

@@ -8,5 +8,5 @@ export declare module './Codegen' {
       component: () => React.FC
     }
   }
-  export const LevelCodegen: React.FC<{ name?: string }>
+  export const WeltmeisterCodegen: React.FC<{ name?: string }>
 }

@@ -1,5 +1,5 @@
 import { createContext, CSSProperties, useContext, useMemo } from 'react'
-import { Impact, ImpactAnimationSheet } from '../impact/impact'
+import { Impact, ImpactEntity } from '../impact/impact'
 
 export type ImpactValue<T> = { value: T }
 
@@ -37,12 +37,22 @@ export const useGameContext = () => {
   return useContext(GameContext)
 }
 
+// resource
+
+export type Resource = {
+  name: string
+  src: string | number
+  width: number
+  height: number
+}
+
 // level
 
 export type LevelProps = {
   children?: React.ReactNode
   name: string
-  onUpdate: () => void
+  data?: object
+  resources?: Array<Resource>
 }
 
 export type LevelContextT = Omit<LevelProps, 'children'> & {
@@ -63,13 +73,12 @@ export type AnimationSheetAnim = {
   frames: Array<number>
 }
 
-export type EntityContextT = {
-  animSheet: ImpactAnimationSheet | null
-  anims: Array<AnimationSheetAnim>
+export type AnimationSheet = Resource & {
+  animations: Array<AnimationSheetAnim>
 }
 
-export const EntityContext = createContext<EntityContextT>({} as EntityContextT)
-
-export const useEntityContext = () => {
-  return useContext(EntityContext)
-}
+export type EntityProps = {
+  children?: React.ReactNode
+  name: string
+  animationSheet: AnimationSheet
+} & Partial<Omit<ImpactEntity, 'animSheet'>>

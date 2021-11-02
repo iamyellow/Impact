@@ -9,29 +9,6 @@ import addUndo from './undo'
 import makeInstance from './weltmeister'
 
 const config = {
-  project: {
-    // The prefix path of your game's source code. You only have to change
-    // this if you use the 'ImpactPrefix' in your dev environment.
-    modulePath: 'lib/',
-
-    // The default path for the level file selection box
-    // TODO: remove this
-    levelPath: 'lib/game/levels/',
-
-    // Whether to save levels as plain JSON or wrapped in a module. If
-    // you want to load levels asynchronously via AJAX, saving as plain
-    // JSON can be helpful.
-    outputFormat: 'module', // 'module' or 'json'
-
-    // Whether to pretty print the JSON data in level files. If you have
-    // any issues with your levels, it's usually a good idea to turn this
-    // on and look at the saved level files with a text editor.
-    prettyPrint: true
-  },
-
-  // Plugins for Weltmeister: an array of module names to load
-  plugins: [],
-
   // Default settings when creating new layers in Weltmeister. Change these
   // as you like
   layerDefaults: {
@@ -42,9 +19,6 @@ const config = {
 
   // Whether to ask before closing Weltmeister when there are unsaved changes
   askBeforeClose: true,
-
-  // Whether to attempt to load the last opened level on startup
-  loadLastLevel: true,
 
   // Size of the "snap" grid when moving entities
   entityGrid: 4,
@@ -107,16 +81,8 @@ const config = {
   // The tilesize only specifies the size in the image - resizing to final
   // size for each layer happens in Weltmeister.
   collisionTiles: {
-    path: 'lib/weltmeister/collisiontiles-64.png',
+    path: '/collisiontiles-64.png',
     tilesize: 64
-  },
-
-  // API paths for saving levels and browsing directories. If you use a
-  // different backend (i.e. not the official PHP backend), you may have
-  // to change these.
-  api: {
-    save: '/api/save',
-    browse: '/api/browse'
   }
 }
 

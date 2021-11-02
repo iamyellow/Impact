@@ -10,10 +10,9 @@ export const Level = (props: LevelProps) => {
   const game = useGameContext()
 
   const context = useMemo<LevelContextT>(() => {
-    const { name, onUpdate } = props
+    const { children, ...rest } = props
     return {
-      name,
-      onUpdate,
+      ...rest,
       entityModules: []
     }
   }, [])

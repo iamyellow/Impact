@@ -1,41 +1,27 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { ImpactClass, ImpactEntity } from '../impact/impact'
-import {
-  EntityContext,
-  EntityContextT,
-  useImpact,
-  useLevelContext
-} from './types'
-
-export type EntityProps = {
-  children?: React.ReactNode
-  name: string
-  // TODO: onUpdate
-} & Partial<ImpactEntity>
+import { EntityProps, useImpact, useLevelContext } from './types'
+import { resolveResource as resolveResourceSource } from './Weltmeister/resources'
 
 export const Entity = (props: EntityProps) => {
   const ig = useImpact()
   const levelContext = useLevelContext()
 
-  const context = useMemo<EntityContextT>(() => {
-    return {
-      animSheet: null,
-      anims: []
-    }
-  }, [])
-
   useEffect(() => {
-    const { children, name, ...entityProps } = props
-    const { animSheet, anims } = context
+    const { name, animationSheet, children, ...rest } = props
 
     const EntityClass = ig.Entity as ImpactClass<typeof ImpactEntity>
 
     const EntitySubclass = EntityClass.extend({
-      ...entityProps,
-      animSheet,
+      ...rest,
+      animSheet: new ig.AnimationSheet(
+        resolveResourceSource(animationSheet.src),
+        animationSheet.width,
+        animationSheet.height
+      ),
       init(x: number, y: number, settings?: object) {
         this.parent(x, y, settings)
-        anims.forEach(({ name, duration, frames }) => {
+        animationSheet.animations.forEach(({ name, duration, frames }) => {
           this.addAnim(name, duration, frames)
         })
       }
@@ -45,9 +31,5 @@ export const Entity = (props: EntityProps) => {
     levelContext.entityModules.push(name)
   }, [])
 
-  return (
-    <EntityContext.Provider value={context}>
-      {props.children}
-    </EntityContext.Provider>
-  )
+  return <>{props.children ?? null}</>
 }

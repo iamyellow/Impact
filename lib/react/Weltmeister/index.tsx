@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { makeImpactInstance } from '../impact'
-import { makeWeltmeisterInstance } from '../weltmeister'
-import '../weltmeister/jquery-1.7.1.min.js'
-import '../weltmeister/jquery-ui-1.8.1.custom.min.js'
-import '../weltmeister/weltmeister.css'
-import { LevelCodegen, modules } from './Codegen'
-import { GameContext, GameContextT, ImpactContext } from './types'
+import ReactDOM from 'react-dom'
+import { makeImpactInstance } from '../../impact'
+import { makeWeltmeisterInstance } from '../../weltmeister'
+import { WeltmeisterGame } from '../../weltmeister/weltmeister'
+import { WeltmeisterCodegen, modules } from './Codegen'
+import { GameContext, GameContextT, ImpactContext } from '../types'
 
-export const Weltmeister = () => {
+const Weltmeister = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ready, setReady] = useState(false)
 
@@ -22,25 +21,25 @@ export const Weltmeister = () => {
 
   const ig = useMemo(() => {
     const ig = makeImpactInstance()
-    // TODO: give ig._wm back
+    // TODO: disable ig sound, ig input, or somehow tell ig that we're in wm
     return ig
   }, [])
 
   const wm = useMemo(() => {
     const wm = makeWeltmeisterInstance(ig)
+    wm.levels = modules
     return wm
   }, [])
 
   const context = useMemo<GameContextT>(() => {
     return {
       setLevel(level) {
+        // TODO: remove ready or have something like loading
         ig.ready = true
 
-        console.log('*** setLevel', level)
-
         const finalize = () => {
-          wm.entityModules = level.entityModules
-          ig.game = new wm.Weltmeister()
+          const game = ig.game as WeltmeisterGame
+          game.loadLevel(level)
         }
 
         const total = ig.resources.length
@@ -49,7 +48,6 @@ export const Weltmeister = () => {
           return
         }
 
-        console.log(`*** will load ${total} resources`)
         let loaded = 0
         ig.resources.forEach((resource) => {
           if (resource instanceof ig.Sound) {
@@ -79,6 +77,9 @@ export const Weltmeister = () => {
       throw 'No canvas'
     }
 
+    // every descendant has been mounted
+    // so, level has been seet
+
     ig.system = new ig.System(
       canvasRef.current,
       1,
@@ -87,7 +88,7 @@ export const Weltmeister = () => {
       wm.config.view.zoom
     )
     ig.input = new wm.EventedInput()
-    //ig.soundManager = new ig.SoundManager()
+    ig.game = new wm.Weltmeister()
 
     setReady(true)
   }, [])
@@ -95,7 +96,7 @@ export const Weltmeister = () => {
   return (
     <ImpactContext.Provider value={ig}>
       <GameContext.Provider value={context}>
-        {ready && levelName !== null && <LevelCodegen name={levelName} />}
+        {ready && levelName !== null && <WeltmeisterCodegen name={levelName} />}
         <div id="headerMenu">
           <span className="headerTitle"></span>
           <span className="unsavedTitle"></span>
@@ -106,13 +107,6 @@ export const Weltmeister = () => {
               value="Save"
               className="button"
             />
-            <input
-              type="button"
-              id="levelSaveAs"
-              value="Save As"
-              className="button"
-            />
-            <input type="button" id="levelNew" value="New" className="button" />
             <input
               type="button"
               id="levelLoad"
@@ -169,7 +163,12 @@ export const Weltmeister = () => {
                 </dd>
                 <dt>Tileset:</dt>
                 <dd>
-                  <input type="text" className="text" id="layerTileset" />
+                  <input
+                    autoComplete="off"
+                    type="text"
+                    className="text"
+                    id="layerTileset"
+                  />
                 </dd>
                 <dt>Tilesize:</dt>
                 <dd>
@@ -252,3 +251,5 @@ export const Weltmeister = () => {
     </ImpactContext.Provider>
   )
 }
+
+ReactDOM.render(<Weltmeister />, document.getElementById('root'))
