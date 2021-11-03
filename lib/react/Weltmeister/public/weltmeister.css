@@ -79,7 +79,7 @@ input.number {
   text-align: right;
 }
 
-input.button {
+button {
   font-size: 90%;
   padding-left: 13px;
   padding-right: 13px;
@@ -95,11 +95,11 @@ input.button {
   -webkit-transition: 0.1s linear;
 }
 
-input.button:hover {
+button:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-input.button:active {
+button:active {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -107,14 +107,11 @@ input.text#layerName {
   width: 140px;
 }
 
-input.text#layerTileset {
+input.text#layerTilesetName {
   width: 138px;
 }
 
-input#levelLoad {
-  margin-right: 10px;
-}
-input#reloadImages {
+button#levelLoad {
   margin-right: 10px;
 }
 
@@ -394,7 +391,7 @@ div.modalDialogButtons {
   text-align: right;
 }
 
-div.modalDialogButtons input.button {
+div.modalDialogButtons button {
   min-width: 100px;
   text-align: center;
   margin-left: 10px;
@@ -461,7 +458,7 @@ div#zoomIndicator {
   display: none;
 }
 
-input#toggleSidebar {
+button#toggleSidebar {
   width: 200px;
   height: 47px;
   text-indent: -99999px;
@@ -471,7 +468,7 @@ input#toggleSidebar {
   padding: 0px;
 }
 
-input#toggleSidebar.active {
+button#toggleSidebar.active {
   background-position: 50% 10px;
 }
 

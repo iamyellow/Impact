@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { makeImpactInstance } from '../impact'
 import {
+  Game as GameT,
   GameContext,
-  GameContextT,
   GameProps,
   ImpactContext,
-  LevelContextT
+  Level
 } from './types'
 
 export const Game = (props: GameProps) => {
@@ -15,7 +15,7 @@ export const Game = (props: GameProps) => {
 
   const [ready, setReady] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const levelRef = useRef<LevelContextT>()
+  const levelRef = useRef<Level>()
 
   const ig = useMemo(() => {
     return makeImpactInstance()
@@ -56,7 +56,7 @@ export const Game = (props: GameProps) => {
     })
   }, [])
 
-  const context = useMemo<GameContextT>(() => {
+  const context = useMemo<GameT>(() => {
     return {
       setLevel(levelContext) {
         console.log(`*** setLevel ${levelContext.name}`)

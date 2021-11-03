@@ -1,35 +1,60 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { ImpactClass, ImpactEntity } from '../impact/impact'
-import { EntityProps, useImpact, useLevelContext } from './types'
-import { resolveResource as resolveResourceSource } from './Weltmeister/resources'
+import { resolveResource } from './Resource'
+import {
+  EntityProps,
+  Entity as EntityT,
+  useImpact,
+  EntityContext,
+  useLevel
+} from './types'
 
 export const Entity = (props: EntityProps) => {
   const ig = useImpact()
-  const levelContext = useLevelContext()
+  const levelContext = useLevel()
+
+  const context = useMemo<EntityT>(() => {
+    const { name } = props
+    return {
+      name,
+      resources: []
+    }
+  }, [])
 
   useEffect(() => {
-    const { name, animationSheet, children, ...rest } = props
+    const { resources } = context
+    const { name, children, ...instanceProps } = props
+
+    if (!resources.length) {
+      return console.warn(`Entity ${name} without resources`)
+    } else if (resources.length > 1) {
+      return console.warn(
+        `Entity ${name} with more than 1 resource, picking the first`
+      )
+    }
+
+    const { src, width, height, animations = [] } = resources[0]
 
     const EntityClass = ig.Entity as ImpactClass<typeof ImpactEntity>
 
     const EntitySubclass = EntityClass.extend({
-      ...rest,
-      animSheet: new ig.AnimationSheet(
-        resolveResourceSource(animationSheet.src),
-        animationSheet.width,
-        animationSheet.height
-      ),
+      ...instanceProps,
+      animSheet: new ig.AnimationSheet(resolveResource(src), width, height),
       init(x: number, y: number, settings?: object) {
         this.parent(x, y, settings)
-        animationSheet.animations.forEach(({ name, duration, frames }) => {
+        animations.forEach(({ name, duration, frames }) => {
           this.addAnim(name, duration, frames)
         })
       }
     } as any)
     ig.global[`Entity${name}`] = EntitySubclass
 
-    levelContext.entityModules.push(name)
+    levelContext.entities.push(context)
   }, [])
 
-  return <>{props.children ?? null}</>
+  return (
+    <EntityContext.Provider value={context}>
+      {props.children}
+    </EntityContext.Provider>
+  )
 }

@@ -12,15 +12,14 @@ const template = require('@babel/template').default
 // server
 const json = require('body-parser').json
 const writeFile = require('fs').writeFile
-const prettier = require('prettier')
 
-const BASE_DIRNAME = `${__dirname}/../lib/react/Weltmeister`
+const BASE_LIB = `${__dirname}/../lib/react`
+const BASE_LIB_WM = `${BASE_LIB}/Weltmeister`
 const IMAGE_REGEX = /\.(png|jpg|jpeg|gif)$/i
+const DATAJS_REGEX = /\.data\.js/i
 
 const rw_import_tmpl = template(`const LVALUE = require(RVALUE);`)
-const rw_require_tmpl = template(
-  `require("${BASE_DIRNAME}/resources").makeResource(require(RVALUE), PATH);`
-)
+const rw_require_tmpl = template(`[require(REQUIRED), PATH];`)
 
 const compiler = webpack({
   mode: 'development',
@@ -28,7 +27,7 @@ const compiler = webpack({
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
   },
-  entry: path.resolve(BASE_DIRNAME, 'index.tsx'),
+  entry: path.resolve(BASE_LIB_WM, 'index.tsx'),
   output: {
     publicPath: '/'
   },
@@ -60,7 +59,7 @@ const compiler = webpack({
                 ({ types: t }) => {
                   return {
                     visitor: {
-                      ImportDeclaration(p, state) {
+                      ImportDeclaration(p) {
                         if (!IMAGE_REGEX.test(p.node.source.value)) {
                           return
                         }
@@ -93,15 +92,19 @@ const compiler = webpack({
 
                         const rvalue = p.node.arguments[0].value
 
-                        if (!rvalue || !IMAGE_REGEX.test(rvalue)) {
+                        if (
+                          !rvalue ||
+                          !IMAGE_REGEX.test(rvalue) ||
+                          DATAJS_REGEX.test(state.file.opts.filename)
+                        ) {
                           return
                         }
 
                         const ast = rw_require_tmpl({
-                          RVALUE: t.stringLiteral(rvalue),
+                          REQUIRED: t.stringLiteral(rvalue),
                           PATH: t.stringLiteral(
-                            path.resolve(
-                              path.parse(state.file.opts.filename).dir,
+                            path.posix.resolve(
+                              path.posix.parse(state.file.opts.filename).dir,
                               rvalue
                             )
                           )
@@ -125,7 +128,7 @@ const compiler = webpack({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(BASE_DIRNAME, 'index.html')
+      template: path.resolve(BASE_LIB_WM, 'index.html')
     })
   ]
 })
@@ -144,20 +147,26 @@ const server = new WebpackDevServer(
 
       devServer.app.use(json())
       devServer.app.post('/api/save', (req, res) => {
-        writeFile(
-          req.body.path,
-          prettier.format(`export default ${JSON.stringify(req.body.data)}`),
-          (err) => {
-            if (err) {
-              console.error(err)
-              return res.status(500).end()
-            }
+        const { path: filePath, resourceMap, data } = req.body
+        const fileDirname = path.posix.dirname(filePath)
+
+        const parsedData = Object.values(resourceMap).reduce((ret, value) => {
+          return ret.replaceAll(
+            `"${value.src}"`,
+            `require("./${path.posix.relative(fileDirname, value.path)}")`
+          )
+        }, JSON.stringify(data))
+
+        writeFile(filePath, `export default ${parsedData}`, (err) => {
+          if (err) {
+            console.error(err)
+            return res.status(500).end()
           }
-        )
+        })
         res.status(200).end()
       })
     },
-    static: [path.resolve(BASE_DIRNAME, `public`)],
+    static: [path.resolve(BASE_LIB_WM, `public`)],
     port: 6120
   },
   compiler

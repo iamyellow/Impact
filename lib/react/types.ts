@@ -26,59 +26,73 @@ export type GameProps = {
   scale?: number
 }
 
-export type GameContextT = {
+export type Game = {
   clearLevel: () => void
-  setLevel: (level: LevelContextT) => void
+  setLevel: (level: Level) => void
 }
 
-export const GameContext = createContext<GameContextT>({} as GameContextT)
+export const GameContext = createContext<Game>({} as Game)
 
-export const useGameContext = () => {
+export const useGame = () => {
   return useContext(GameContext)
-}
-
-// resource
-
-export type Resource = {
-  name: string
-  src: string | number
-  width: number
-  height: number
 }
 
 // level
 
 export type LevelProps = {
-  children?: React.ReactNode
   name: string
   data?: object
-  resources?: Array<Resource>
+  children?: React.ReactNode
 }
 
-export type LevelContextT = Omit<LevelProps, 'children'> & {
-  entityModules: Array<string>
+export type Level = Pick<LevelProps, 'name' | 'data'> & {
+  entities: Array<Entity>
+  resources: Array<LevelResource>
 }
 
-export const LevelContext = createContext<LevelContextT>({} as LevelContextT)
+export const LevelContext = createContext<Level>({} as Level)
 
-export const useLevelContext = () => {
+export const useLevel = () => {
   return useContext(LevelContext)
 }
 
 // entity
 
-export type AnimationSheetAnim = {
+export type EntityProps = {
+  name: string
+  children?: React.ReactNode
+} & Partial<Omit<ImpactEntity, 'animSheet'>>
+
+export type Entity = Pick<EntityProps, 'name'> & {
+  resources: Array<Resource>
+}
+
+export const EntityContext = createContext<Entity | null>(null)
+
+export const useEntity = () => {
+  return useContext(EntityContext)
+}
+
+// resource
+
+export enum ResourceType {
+  ENTITY = 'entity',
+  MAP = 'map'
+}
+
+export type ResourceAnimation = {
   name: string
   duration: number
   frames: Array<number>
 }
 
-export type AnimationSheet = Resource & {
-  animations: Array<AnimationSheetAnim>
+export type ResourceProps = {
+  name: string
+  src: string | number
+  width: number
+  height: number
+  animations?: Array<ResourceAnimation>
 }
 
-export type EntityProps = {
-  children?: React.ReactNode
-  name: string
-  animationSheet: AnimationSheet
-} & Partial<Omit<ImpactEntity, 'animSheet'>>
+export type Resource = ResourceProps
+export type LevelResource = Resource & { type: ResourceType }

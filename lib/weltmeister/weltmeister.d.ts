@@ -5,25 +5,24 @@ export declare module './weltmeister' {
     static getMaxWidth(): number
     static getMaxHeight(): number
 
-    loadLevel(context: object): void
+    loadLevel(context: object, resourceMap: object): void
+
+    onSaveLevel(name: string): void
+    onLoadLevel(name: string): void
   }
 
   class WeltmeisterEventedInput extends ImpactInput {}
-
-  type WeltmeisterConfig = any
 
   type Weltmeister = {
     Weltmeister: typeof WeltmeisterGame
     EventedInput: typeof WeltmeisterEventedInput
 
     levels: object
-
     config: WeltmeisterConfig
     input: WeltmeisterEventedInput
   }
 
   export default function (
-    impact: Impact,
-    config: WeltmeisterConfig
+    impact: Impact
   ): Weltmeister
 }

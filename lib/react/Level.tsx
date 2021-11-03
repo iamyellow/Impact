@@ -1,19 +1,16 @@
 import React, { useEffect, useMemo } from 'react'
-import {
-  LevelContext,
-  LevelContextT,
-  LevelProps,
-  useGameContext
-} from './types'
+import { Level as LevelT, LevelContext, LevelProps, useGame } from './types'
 
 export const Level = (props: LevelProps) => {
-  const game = useGameContext()
+  const game = useGame()
 
-  const context = useMemo<LevelContextT>(() => {
-    const { children, ...rest } = props
+  const context = useMemo<LevelT>(() => {
+    const { name, data } = props
     return {
-      ...rest,
-      entityModules: []
+      name,
+      data,
+      entities: [],
+      resources: []
     }
   }, [])
 

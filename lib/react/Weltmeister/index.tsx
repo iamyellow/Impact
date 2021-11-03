@@ -3,8 +3,15 @@ import ReactDOM from 'react-dom'
 import { makeImpactInstance } from '../../impact'
 import { makeWeltmeisterInstance } from '../../weltmeister'
 import { WeltmeisterGame } from '../../weltmeister/weltmeister'
-import { WeltmeisterCodegen, modules } from './Codegen'
-import { GameContext, GameContextT, ImpactContext } from '../types'
+import {
+  Game as GameT,
+  GameContext,
+  ImpactContext,
+  LevelResource
+} from '../types'
+import { modules, WeltmeisterCodegen } from './Codegen'
+
+const LAST_LEVEL_STORAGE_KEY = 'wm.bak'
 
 const Weltmeister = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -15,6 +22,12 @@ const Weltmeister = () => {
     if (keys.length === 0) {
       return null
     }
+
+    const lastLevelKey = localStorage.getItem(LAST_LEVEL_STORAGE_KEY)
+    if (lastLevelKey !== null && modules[lastLevelKey]) {
+      return modules[lastLevelKey].name
+    }
+
     const firstKey = keys[0]
     return modules[firstKey].name
   })
@@ -31,18 +44,26 @@ const Weltmeister = () => {
     return wm
   }, [])
 
-  const context = useMemo<GameContextT>(() => {
+  const context = useMemo<GameT>(() => {
     return {
       setLevel(level) {
+        const game = ig.game as WeltmeisterGame
+        const resourceMap = level.resources.reduce((ret, curr) => {
+          const { name, src: resourceSrc, type } = curr
+          const [src, path] = resourceSrc as any as [string, string]
+          return { ...ret, [name]: { name, src, path, type } }
+        }, {} as Record<string, Pick<LevelResource, 'name' | 'src' | 'type'>>)
+
+        game.loadLevel(level, resourceMap)
         // TODO: remove ready or have something like loading
         ig.ready = true
 
         const finalize = () => {
-          const game = ig.game as WeltmeisterGame
-          game.loadLevel(level)
+          game.draw()
         }
 
         const total = ig.resources.length
+        console.log(`*** will load ${total} resources`)
         if (total === 0) {
           finalize()
           return
@@ -59,6 +80,8 @@ const Weltmeister = () => {
             }
             loaded += 1
 
+            console.log(`*** ${path} loaded`)
+
             if (loaded === total) {
               finalize()
             }
@@ -66,6 +89,7 @@ const Weltmeister = () => {
         })
       },
       clearLevel() {
+        // reset state
         ig.ready = false
         ig.resources.length = 0
       }
@@ -83,12 +107,17 @@ const Weltmeister = () => {
     ig.system = new ig.System(
       canvasRef.current,
       1,
-      Math.floor(wm.Weltmeister.getMaxWidth() / wm.config.view.zoom),
-      Math.floor(wm.Weltmeister.getMaxHeight() / wm.config.view.zoom),
-      wm.config.view.zoom
+      wm.Weltmeister.getMaxWidth(),
+      wm.Weltmeister.getMaxHeight(),
+      1
     )
     ig.input = new wm.EventedInput()
-    ig.game = new wm.Weltmeister()
+
+    const wggame = new wm.Weltmeister()
+    wggame.onSaveLevel = (name) => {
+      localStorage.setItem(LAST_LEVEL_STORAGE_KEY, name)
+    }
+    ig.game = wggame
 
     setReady(true)
   }, [])
@@ -101,32 +130,9 @@ const Weltmeister = () => {
           <span className="headerTitle"></span>
           <span className="unsavedTitle"></span>
           <span className="headerFloat">
-            <input
-              type="button"
-              id="levelSave"
-              value="Save"
-              className="button"
-            />
-            <input
-              type="button"
-              id="levelLoad"
-              value="Load"
-              className="button"
-            />
-            <input
-              type="button"
-              id="reloadImages"
-              value="Reload Images"
-              title="Reload Images"
-              className="button"
-            />
-            <input
-              type="button"
-              id="toggleSidebar"
-              value="Toggle Sidebar"
-              title="Toggle Sidebar"
-              className="button"
-            />
+            <button id="levelSave">Save</button>
+            <button id="levelLoad">Load</button>
+            <button id="toggleSidebar">Toggle Sidebar</button>
           </span>
         </div>
 
@@ -167,7 +173,7 @@ const Weltmeister = () => {
                     autoComplete="off"
                     type="text"
                     className="text"
-                    id="layerTileset"
+                    id="layerTilesetName"
                   />
                 </dd>
                 <dt>Tilesize:</dt>
@@ -203,18 +209,10 @@ const Weltmeister = () => {
                   </label>
                 </dd>
                 <dd>
-                  <input
-                    type="button"
-                    id="buttonSaveLayerSettings"
-                    value="Apply Changes"
-                    className="button"
-                  />
-                  <input
-                    type="button"
-                    id="buttonRemoveLayer"
-                    value="Delete"
-                    className="button"
-                  />
+                  <button id="buttonSaveLayerSettings" value="">
+                    Apply Changes
+                  </button>
+                  <button id="buttonRemoveLayer">Delete</button>
                 </dd>
               </dl>
             </div>
