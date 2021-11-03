@@ -113,11 +113,12 @@ const Weltmeister = () => {
     )
     ig.input = new wm.EventedInput()
 
-    const wggame = new wm.Weltmeister()
-    wggame.onSaveLevel = (name) => {
+    const wmGame = new wm.Weltmeister()
+    wmGame.onLoadLevel = (name) => {
       localStorage.setItem(LAST_LEVEL_STORAGE_KEY, name)
+      setLevelName(name)
     }
-    ig.game = wggame
+    ig.game = wmGame
 
     setReady(true)
   }, [])

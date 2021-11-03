@@ -6,8 +6,6 @@ export declare module './weltmeister' {
     static getMaxHeight(): number
 
     loadLevel(context: object, resourceMap: object): void
-
-    onSaveLevel(name: string): void
     onLoadLevel(name: string): void
   }
 
