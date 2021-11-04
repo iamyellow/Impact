@@ -1,33 +1,10 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-const TerserPlugin = require('terser-webpack-plugin')
-
-// shortcuts
-
-const isProduction = process.env.NODE_ENV === 'production'
-
-// configuration
-
-const styleLoader = isProduction ? MiniCssExtractPlugin.loader : 'style-loader'
-const optimization = {}
-const plugins = [
-  new HtmlWebpackPlugin({
-    template: path.resolve(__dirname, 'index.html')
-  })
-]
-
-if (isProduction) {
-  plugins.push(new MiniCssExtractPlugin({}))
-  optimization.minimize = true
-  optimization.minimizer = [new CssMinimizerPlugin(), new TerserPlugin()]
-}
 
 // config
 
 module.exports = {
-  mode: isProduction ? 'production' : 'development',
+  mode: 'development',
   devtool: false,
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -52,7 +29,7 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        use: [styleLoader, 'css-loader']
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -60,17 +37,13 @@ module.exports = {
       }
     ]
   },
-  plugins,
-  optimization,
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'index.html')
+    })
+  ],
   devServer: {
     historyApiFallback: true,
-		proxy: {
-      '/api': {
-        target: 'http://localhost:6120',
-        pathRewrite: { '^/api': '' },
-      },
-    },
-    static: [path.resolve(__dirname, `public`)],
     port: 3000
   }
 }
